@@ -10,7 +10,7 @@ echo ═════════════════════════
 echo.
 
 echo [1/4] 拉取最新代码...
-git pull --rebase
+git pull --rebase --autostash
 if errorlevel 1 goto :err
 
 echo.
