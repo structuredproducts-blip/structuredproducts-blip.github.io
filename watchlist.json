@@ -6823,7 +6823,7 @@
       "price": 161.38,
       "marketCap": 194.49,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         163.72,
         164.59,
@@ -7927,7 +7927,7 @@
       "price": 132.29,
       "marketCap": 134.85,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         96.13,
         97.04,
@@ -9031,7 +9031,7 @@
       "price": 252.05,
       "marketCap": 210.69,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         158.37,
         166.11,
@@ -10134,7 +10134,7 @@
       "price": 371.54,
       "marketCap": 1754.55,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         365.02,
         360.45,
@@ -11235,7 +11235,7 @@
       "price": 331.41,
       "marketCap": 78.31,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         318.53,
         313.0,
@@ -12336,7 +12336,7 @@
       "price": 953.83,
       "marketCap": 242.88,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         1045.17,
         1113.11,
@@ -13438,7 +13438,7 @@
       "price": 193.57,
       "marketCap": 49.34,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         124.21,
         135.4,
@@ -14541,7 +14541,7 @@
       "price": 1735.01,
       "marketCap": 651.5,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         1792.3,
         1767.03,
@@ -15644,7 +15644,7 @@
       "price": 225.86,
       "marketCap": 56.38,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         277.02,
         273.36,
@@ -16747,7 +16747,7 @@
       "price": 1930.75,
       "marketCap": 99.68,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         1675.1,
         1763.36,
@@ -17847,7 +17847,7 @@
       "price": 348.0,
       "marketCap": 97.94,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         266.54,
         274.14,
@@ -18947,7 +18947,7 @@
       "price": 527.25,
       "marketCap": 112.58,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         460.02,
         485.97,
@@ -20047,7 +20047,7 @@
       "price": 187.38,
       "marketCap": 116.03,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         127.45,
         135.72,
@@ -21152,7 +21152,7 @@
       "price": 571.1,
       "marketCap": 1472.51,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         550.25,
         582.9,
@@ -28078,7 +28078,7 @@
       "price": 240.24,
       "marketCap": 43.74,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         238.0,
         241.91,
@@ -29180,7 +29180,7 @@
       "price": 847.2,
       "marketCap": 188.36,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         899.9,
         820.16,
@@ -30285,7 +30285,7 @@
       "price": 956.14,
       "marketCap": 80.28,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         816.98,
         728.32,
@@ -31389,7 +31389,7 @@
       "price": 472.26,
       "marketCap": 294.8,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         398.83,
         393.67,
@@ -32493,7 +32493,7 @@
       "price": 372.06,
       "marketCap": 55.5,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         436.86,
         369.09,
@@ -33599,7 +33599,7 @@
       "price": 304.09,
       "marketCap": 50.22,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         391.74,
         406.42,
@@ -34706,7 +34706,7 @@
       "price": 54.41,
       "marketCap": 69.27,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         43.71,
         41.23,
@@ -35814,7 +35814,7 @@
       "price": 935.39,
       "marketCap": 1053.57,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         1132.16,
         975.41,
@@ -36916,7 +36916,7 @@
       "price": 201.09,
       "marketCap": 246.42,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         157.6,
         159.99,
@@ -38018,7 +38018,7 @@
       "price": 74.09,
       "marketCap": 53.3,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         62.35,
         68.6,
@@ -39121,7 +39121,7 @@
       "price": 462.0,
       "marketCap": 165.65,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         586.45,
         539.0,
@@ -40225,7 +40225,7 @@
       "price": 399.85,
       "marketCap": 53.57,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         479.5,
         422.46,
@@ -41329,7 +41329,7 @@
       "price": 1614.98,
       "marketCap": 53.45,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         1853.27,
         1740.4,
@@ -42433,7 +42433,7 @@
       "price": 109.76,
       "marketCap": 93.74,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         98.69,
         112.73,
@@ -43538,7 +43538,7 @@
       "price": 55.01,
       "marketCap": 85.09,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         47.0,
         45.13,
@@ -44643,7 +44643,7 @@
       "price": 227.96,
       "marketCap": 223.63,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         175.27,
         193.98,
@@ -45748,7 +45748,7 @@
       "price": 241.45,
       "marketCap": 194.68,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         266.7,
         245.23,
@@ -46850,7 +46850,7 @@
       "price": 190.72,
       "marketCap": 47.13,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         149.06,
         165.48,
@@ -47952,7 +47952,7 @@
       "price": 138.43,
       "marketCap": 149.61,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         98.34,
         106.32,
@@ -49054,7 +49054,7 @@
       "price": 25.63,
       "marketCap": 14.36,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         13.56,
         14.36,
@@ -49776,7 +49776,7 @@
       "price": 137.4,
       "marketCap": 50.58,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         82.31,
         100.77,
@@ -50881,7 +50881,7 @@
       "price": 346.59,
       "marketCap": 101.45,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         258.37,
         266.73,
@@ -51986,7 +51986,7 @@
       "price": 94.24,
       "marketCap": 22.12,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         73.57,
         64.62,
@@ -52704,7 +52704,7 @@
       "price": 113.28,
       "marketCap": 9.02,
       "currency": "USD",
-      "priceChange": NaN,
+      "priceChange": 0.0,
       "sparkline": [
         135.69,
         120.95,

@@ -989,7 +989,8 @@ def main():
         print(f"\n[2/4] Fetching sparklines via yfinance...")
         for i, s in enumerate(stocks):
             s['sparkline']        = get_sparkline(s['yf_code'])
-            s['priceChange']      = get_price_change(s['yf_code'])
+            _pc = get_price_change(s['yf_code'])
+            s['priceChange']      = 0.0 if (_pc is None or _pc != _pc) else _pc  # NaN护栏(_pc!=_pc): 否则浏览器JSON.parse挂→整站空白
             s['price_history']    = get_price_history(s['yf_code'])
             # 条款式 Excel 不含价格/市值 → 运行时补
             if not s['price'] and s['price_history'].get('initialPrice'):
