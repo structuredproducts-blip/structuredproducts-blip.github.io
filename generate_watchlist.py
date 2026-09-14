@@ -1121,7 +1121,7 @@ def main():
 
         output_stocks.append({
             "code":           code,
-            "name":           ana.get("name") or s['name'],
+            "name":           (s['name'] if any('一' <= _c <= '鿿' for _c in str(s['name'])) else (ana.get("name") or s['name'])),  # Excel名称为中文时优先保留(不被DeepSeek英文名覆盖)
             "name_en":        ana.get("name_en", ""),
             "industry":       s.get('industry_hint') or ana.get("sector", ""),
             "market":         s['market'],

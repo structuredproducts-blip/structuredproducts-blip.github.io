@@ -18,6 +18,9 @@ D = os.path.dirname(os.path.abspath(__file__))
 BAK = os.path.join(D, "_filtered"); os.makedirs(BAK, exist_ok=True)
 ts = dt.datetime.now().strftime("%Y%m%d_%H%M")
 
+sys.path.insert(0, D)
+from cn_translations import to_cn_name, to_cn_industry   # 名称/行业英文→中文词表
+
 srcs = sorted(glob.glob(os.path.join(D, "FCN筛选结果_*.xlsx")))
 if not srcs:
     raise SystemExit("未找到 FCN筛选结果_*.xlsx(筛选器应已交付到本目录)")
@@ -49,8 +52,8 @@ for idx, outfn in SHEET_BY_IDX.items():
         mkt = str(r[c_mkt]).strip().upper()
         raw = str(code).strip()
         disp = str(int(raw)) if raw.isdigit() else raw.upper()
-        name = "" if pd.isna(r[c_name]) else str(r[c_name])
-        industry = "" if (c_sub is None or pd.isna(r[c_sub])) else str(r[c_sub])
+        name = "" if pd.isna(r[c_name]) else to_cn_name(str(r[c_name]))
+        industry = "" if (c_sub is None or pd.isna(r[c_sub])) else to_cn_industry(str(r[c_sub]))
         ws.append(["港股" if mkt == "HK" else "美股", f"{disp} {'HK' if mkt=='HK' else 'US'}",
                    name, industry, None, None, "欧式敲入", 1.01, None])
         n += 1
