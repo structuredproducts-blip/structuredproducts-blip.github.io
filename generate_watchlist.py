@@ -1019,6 +1019,7 @@ def main():
     # ── 3. DeepSeek analysis ──────────────────────────────────────────────────
     def _validate_ana(ana: dict) -> tuple[bool, list]:
         """Check all required report-schema fields are present and non-empty."""
+        if not isinstance(ana, dict):               return False, ["非dict(DeepSeek返回异常,触发重试)"]
         issues = []
         if not ana.get("tagline"):                  issues.append("no tagline")
         if not ana.get("intro"):                    issues.append("no intro")
@@ -1092,6 +1093,7 @@ def main():
     for rank, s in enumerate(stocks):
         code = s['display_code']
         ana  = analysis_map.get(code, {})
+        if not isinstance(ana, dict): ana = {}   # DeepSeek偶返回list→兜底空dict,防出表崩溃
         fcn  = calc_fcn_terms(s['iv_pct'])
         # Manual Excel values override IV-estimated terms
         if s['manual_coupon']  is not None: fcn['coupon'] = s['manual_coupon']
