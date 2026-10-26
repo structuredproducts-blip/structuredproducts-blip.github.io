@@ -93,6 +93,8 @@ IND_MAP = {
     "Footwear & Accessories": "鞋类与配饰",
     "Gold": "黄金",
     "HBM Storage": "HBM存储",
+    "Healthcare Plans": "医疗保险",
+    "Health Information Services": "医疗信息服务",
     "Home Improvement Retail": "家居装修零售",
     "Household & Personal Products": "家庭与个人护理用品",
     "Information Technology Services": "IT服务",
