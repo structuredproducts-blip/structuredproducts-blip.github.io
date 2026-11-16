@@ -102,6 +102,8 @@ IND_MAP = {
     "Integrated Freight & Logistics": "综合货运物流",
     "Internet Content & Information": "互联网内容与信息",
     "Internet Retail": "互联网零售",
+    "Leisure": "休闲用品",
+    "Telecom Services": "电信服务",
     "Marine Shipping": "航运",
     "Medical Devices": "医疗器械",
     "Medical Instruments & Supplies": "医疗器械与耗材",
