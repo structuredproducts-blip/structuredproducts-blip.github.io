@@ -75,6 +75,11 @@
   .theme-toggle .ico-sun{display:none;}
   html[data-theme="dark"] .theme-toggle .ico-moon{display:none;}
   html[data-theme="dark"] .theme-toggle .ico-sun{display:inline-flex;}
+  /* ── 下载 PDF 按钮（置于主题切换左侧）── */
+  .pdf-btn{position:absolute;right:66px;top:50%;transform:translateY(-50%);height:38px;display:inline-flex;align-items:center;gap:6px;padding:0 13px;border:1px solid var(--line);border-radius:2px;background:transparent;color:var(--ink-2);cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.02em;transition:color .15s,border-color .15s;z-index:1;white-space:nowrap;}
+  .pdf-btn:hover{color:var(--gold-2);border-color:var(--line-2);}
+  .pdf-btn svg,.pdf-btn i{width:15px;height:15px;}
+  @media(max-width:600px){.pdf-btn span{display:none;}.pdf-btn{padding:0 10px;right:64px;}}
 
   /* ── 顶部快速跳转：纯文字链接 + 动画下划线 + 滚动高亮 ── */
   .jump-nav{display:flex;align-items:center;margin-left:34px;flex:1;min-width:0;
@@ -441,7 +446,76 @@
     .hide-mobile{display:none!important;}
     .mobile-full{grid-column:1/-1!important;}
   }
+
+  /* ══════════ 打印 / 导出 PDF（方案一：浏览器打印，中文零乱码）══════════ */
+  /* 打印专用页眉 / 分组表格 / 固定页脚：屏幕上永远隐藏，只在打印(PDF)时出现 */
+  #print-sheet,#print-footer{display:none;}
+
+  /* ── PDF 导出遮罩（Paged.js 分页预览）── */
+  #pdf-overlay{position:fixed;inset:0;z-index:9999;background:#54585c;overflow:auto;display:none;}
+  #pdf-overlay.on{display:block;}
+  #pdf-toolbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:14px;padding:10px 18px;background:#2b2e31;color:#eee;font-size:13px;box-shadow:0 1px 6px rgba(0,0,0,.3);}
+  #pdf-toolbar .pdf-grow{flex:1;}
+  #pdf-toolbar button{border:1px solid #666;background:#3a3e42;color:#eee;border-radius:3px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;}
+  #pdf-toolbar button.primary{background:#C8A96A;border-color:#C8A96A;color:#1a1a1a;}
+  #pdf-toolbar button:hover{filter:brightness(1.1);}
+  #pdf-render{padding:24px 0 48px;display:flex;flex-direction:column;align-items:center;gap:18px;}
+  #pdf-render .pagedjs_page{background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.35);}
+  @media print{
+    /* 导出遮罩打开时：只打印分页预览，隐藏其它一切 */
+    body.pdf-open>*:not(#pdf-overlay){display:none!important;}
+    body.pdf-open #pdf-overlay{position:static!important;background:#fff!important;overflow:visible!important;display:block!important;}
+    body.pdf-open #pdf-toolbar{display:none!important;}
+    body.pdf-open #pdf-render{padding:0!important;gap:0!important;}
+    body.pdf-open #pdf-render .pagedjs_page{box-shadow:none!important;}
+    /* 每页底部重复的风险声明页脚 */
+    #print-footer{display:block!important;position:fixed;left:0;right:0;bottom:5mm;padding:4px 10mm 0;border-top:.6pt solid #bbb;font-size:8px;line-height:1.45;color:#555;text-align:justify;}
+    #print-footer strong{color:#333;}
+    footer{display:none!important;}  /* 原流式声明改由固定页脚承载，避免独占一页 */
+    /* 强制保留背景色，热力图颜色才会打印出来 */
+    *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+    html,body{background:#fff!important;}
+    /* 隐藏交互外壳：导航、按钮、浮层、弹窗、提示；顶部 3 只的浮层改由完整表格替代 */
+    nav,#jump-nav,#theme-toggle,#pdf-btn,.admin-fab,#toast-container,.modal-backdrop,.fp-more,.no-print,#top-panels{display:none!important;}
+    /* 打开打印专用页眉 + 分组完整表格 */
+    #print-sheet{display:block!important;}
+    /* 去掉打印时无意义的悬浮动效/阴影 */
+    .sh-tile,.sh-tile:hover,.float-panel{transform:none!important;box-shadow:none!important;}
+    /* 避免标的卡片 / 热力图块 / 表格行被跨页从中间切断 */
+    .float-panel,.sh-tile,.stock-row,.card,tr{break-inside:avoid;page-break-inside:avoid;}
+    /* 标题不与其下内容分离到上一页末尾 */
+    .section-label,h1,h2,.ps-gh,.ps-mkt{break-after:avoid;page-break-after:avoid;}
+
+    /* ── 打印页眉 ── */
+    .ps-header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #1a1a1a;padding-bottom:8px;margin-bottom:6px;}
+    .ps-brand{font-size:19px;font-weight:700;color:#111;}
+    .ps-brand small{display:block;font-size:10px;font-weight:500;color:#666;letter-spacing:.08em;margin-top:3px;}
+    .ps-meta{font-size:11px;color:#444;text-align:right;line-height:1.5;}
+    .ps-meta b{font-size:13px;color:#111;}
+    .ps-toc{font-size:10.5px;color:#555;margin:0 0 18px;letter-spacing:.04em;}
+    .ps-toc span{margin:0 10px 0 0;}
+    /* ── 分组块 ── */
+    .ps-group{margin-bottom:22px;break-inside:auto;}
+    .ps-gh{display:flex;align-items:center;gap:9px;margin:16px 0 4px;}
+    .ps-badge{font-size:9px;font-weight:700;letter-spacing:.1em;color:#fff;padding:2px 7px;border-radius:3px;}
+    .ps-gh h3{font-size:15px;font-weight:700;color:#111;margin:0;}
+    .ps-gh .ps-cnt{font-size:11px;color:#777;font-weight:500;}
+    .ps-crit{font-size:10px;color:#666;line-height:1.5;margin:0 0 9px;}
+    .ps-mkt{font-size:11.5px;font-weight:700;color:#333;margin:11px 0 5px;padding-left:2px;}
+    /* ── 表格 ── */
+    .ps-table{width:100%;border-collapse:collapse;font-size:10px;margin-bottom:4px;}
+    .ps-table thead{display:table-header-group;}  /* 跨页时表头自动重复 */
+    .ps-table th{background:#f1efe9;color:#333;font-weight:700;text-align:left;padding:5px 7px;border:1px solid #d8d3c7;white-space:nowrap;}
+    .ps-table td{padding:4px 7px;border:1px solid #e4e0d6;color:#222;vertical-align:middle;}
+    .ps-table th.ps-r,.ps-table td.ps-r{text-align:right;font-variant-numeric:tabular-nums;}
+    .ps-table tbody tr:nth-child(even){background:#faf9f6;}
+    .ps-code{font-weight:700;font-variant-numeric:tabular-nums;}
+    .ps-cpn{font-weight:700;}
+    .ps-neg{color:#c0392b;}.ps-pos{color:#1e8449;}
+  }
 </style>
+<!-- 非遮罩直接 Ctrl+P(方案一回退)时的页边距；导出遮罩打开时由 JS 关闭它，避免和 Paged.js 的 @page{margin:0} 叠加导致空白页 -->
+<style id="fallback-page-css">@media print{ @page{ margin:10mm 10mm 16mm 10mm; } }</style>
 </head>
 <body>
 
@@ -456,6 +530,9 @@
     </div>
     <!-- 快速跳转：Robinhood 式纯文字链接，紧贴 logo 右侧（按可见 section 动态生成）-->
     <div id="jump-nav" class="jump-nav"></div>
+    <button id="pdf-btn" onclick="exportPDF()" class="pdf-btn" type="button" aria-label="下载整页为 PDF" title="生成可下载的 PDF（含页码与每页风险声明）">
+      <i data-lucide="file-down"></i><span>下载 PDF</span>
+    </button>
     <button id="theme-toggle" onclick="toggleTheme()" class="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">
       <i data-lucide="moon" class="ico-moon"></i>
       <i data-lucide="sun" class="ico-sun"></i>
@@ -465,6 +542,9 @@
 
 <!-- ═══════════════ VIEW: SCREENER ═══════════════ -->
 <div id="view-screener" class="view active">
+
+  <!-- ── 打印/PDF 专用：品牌页眉 + 三大分组完整表格（仅打印时可见，由 buildPrintSheet() 填充）── -->
+  <section id="print-sheet"></section>
 
   <!-- ── 顶部三大策略浮层（无类型数据时自动隐藏）── -->
   <section id="top-panels" class="border-b border-line" style="display:none;">
@@ -671,6 +751,11 @@
     <p><strong class="text-ink-2">重要风险披露 ·</strong> 固定票息票据（FCN）属于结构化衍生产品，含有股票挂钩风险。投资者可能损失全部本金。本平台内容仅供合资格投资者参考，不构成投资建议或要约。所展示历史数据不代表未来表现。投资前请仔细阅读产品条款与风险披露文件，并咨询专业顾问。</p>
   </div>
 </footer>
+
+<!-- 打印/PDF 专用固定页脚：每页底部重复出现（风险声明 + 页码位），屏幕上隐藏 -->
+<div id="print-footer">
+  <strong>重要风险披露 ·</strong> 固定票息票据（FCN）属结构化衍生产品，含股票挂钩风险，投资者可能损失全部本金；本内容仅供合资格投资者参考，不构成投资建议或要约，历史数据不代表未来表现。
+</div>
 
 <!-- ═══════════════ ADMIN PASSWORD MODAL ═══════════════ -->
 <div class="modal-backdrop" id="login-modal">
@@ -1451,10 +1536,10 @@ const TYPES={
   '稳健':{label:'低波精选',en:'LOW VOL',badge:'LOW VOL',panelTitle:'低波精选组',icon:'shield',pill:'pill-type-stable',color:'var(--green-ink)',
           desc:'大盘蓝筹 · 下行缓冲更厚',who:'大盘蓝筹 · 下行缓冲更厚',
           criteria:'综合基本面质量、股价波动、期权隐含波动率、估值与流动性等多项参数精选——偏向大盘蓝筹、走势较稳的标的，下行缓冲更厚，票息更稳健。'},
-  '进取':{label:'高波精选',en:'HIGH VOL',badge:'HIGH VOL',panelTitle:'高波精选组',icon:'zap',pill:'pill-type-growth',color:'var(--gold-2)',
+  '进取':{label:'高波精选',en:'HIGH VOL',badge:'HIGH VOL',panelTitle:'高波精选组',icon:'zap',pill:'pill-type-growth',color:'#BE8A14',
           desc:'票息更高 · 波动更大',who:'波动更大 · 票息更高 · 保留下行缓冲',
           criteria:'采用同一套基本面与期权隐含波动率等多项参数精选——偏向波动更大、票息更高的标的，并把接货线压得更低，在争取更高票息的同时保留下行缓冲。'},
-  '热度':{label:'市场热度型',en:'MOMENTUM',badge:'HOT',panelTitle:'市场热度型',icon:'flame',pill:'pill-type-hot',color:'var(--khaki-ink)',
+  '热度':{label:'市场热度型',en:'MOMENTUM',badge:'HOT',panelTitle:'市场热度型',icon:'flame',pill:'pill-type-hot',color:'#D9480F',
           desc:'当周资金焦点 · 每周轮换',who:'当周资金焦点 · 每周轮换',
           criteria:'结合近期涨势、成交放量与技术走强等多项参数，精选当周市场资金最集中的热点主题标的，每周轮换。'},
 };
@@ -2305,6 +2390,84 @@ function toggleTheme(){
   });
 }
 
+// ═══ 下载 PDF（方案一：浏览器打印，中文零乱码）═══
+function downloadPDF(){ buildPrintSheet(); window.print(); }
+
+// 百分比数值格式化：85.0→"85%"，12.97→"12.97%"，空值→"—"
+function _pctv(v){ if(v==null||v!==v) return '—'; const n=+v; return (Number.isInteger(n)?n:parseFloat(n.toFixed(2)))+'%'; }
+// 周次可读化："W47 2026"→"2026 年 · 第 47 周"
+function _weekCn(w){ const m=String(w||'').match(/W\s*(\d+)\D+(\d{4})/i); return m?(m[2]+' 年 · 第 '+m[1]+' 周'):(w||''); }
+
+// 打印/PDF 专用：重建品牌页眉 + 三大分组（低波/高波/热度）美股&港股完整表格
+function buildPrintSheet(){
+  const host=document.getElementById('print-sheet');
+  if(!host||typeof DATA==='undefined'||!DATA.stocks) return;
+  const meta=DATA.meta||{};
+  const toc=Array.from(document.querySelectorAll('#jump-nav .jump-link')).map(a=>a.textContent.trim()).filter(Boolean);
+  const tocLine=(toc.length?toc:['市场热点','热点图','财经日历','标的列表']).map(x=>'<span>· '+x+'</span>').join('');
+  let html=
+    '<div class="ps-header">'+
+      '<div class="ps-brand">FCN 标的筛选平台<small>结构化产品组 · STRUCTURED PRODUCTS</small></div>'+
+      '<div class="ps-meta"><b>'+_weekCn(meta.week)+'</b><br>发布 '+(meta.publishDate||'')+'</div>'+
+    '</div>'+
+    '<div class="ps-toc">本页内容：'+tocLine+'</div>'+
+    '<h2 class="pdf-h2 pdf-h2-first"><span class="sec-no">01</span> 周度精选 · 三大分组</h2>';
+  ['稳健','进取','热度'].forEach(function(t){
+    const cfg=TYPES[t]; if(!cfg) return;
+    const markets=_panelMarkets(t); if(!markets.length) return;
+    const total=DATA.stocks.filter(s=>stockTypes(s).includes(t)).length;
+    html+='<div class="ps-group">'+
+      '<div class="ps-gh"><span class="ps-badge" style="background:'+cfg.color+'">'+(cfg.badge||cfg.en)+'</span>'+
+      '<h3>'+cfg.panelTitle+'</h3><span class="ps-cnt">共 '+total+' 只</span></div>'+
+      '<div class="ps-crit">'+(cfg.criteria||'')+'</div>';
+    markets.forEach(function(m){
+      const pool=_panelPool(t,m); if(!pool.length) return;
+      html+='<div class="ps-mkt">'+mktLabel(m)+'（'+pool.length+'）</div>'+
+        '<table class="ps-table"><thead><tr>'+
+          '<th>代码</th><th>名称</th><th>行业</th><th class="ps-r">现价</th>'+
+          '<th class="ps-r">执行价</th><th class="ps-r">敲入价</th><th>敲入类型</th>'+
+          '<th class="ps-r">敲出价</th><th class="ps-r">年化票息</th>'+
+        '</tr></thead><tbody>';
+      pool.forEach(function(s){
+        const disp=String(s.code).split('.')[0];
+        const cur=s.currency==='HKD'?'HK$':'$';
+        const hasChg=!(s.priceChange==null||s.priceChange!==s.priceChange);
+        const chg=hasChg?' <span class="'+(s.priceChange>=0?'ps-pos':'ps-neg')+'">'+(s.priceChange>=0?'+':'−')+Math.abs(s.priceChange).toFixed(1)+'%</span>':'';
+        const px=(s.price!=null)?cur+s.price+chg:'—';
+        html+='<tr>'+
+          '<td class="ps-code">'+disp+' '+s.market+'</td>'+
+          '<td>'+_esc(s.name)+'</td>'+
+          '<td>'+_esc(s.industry)+'</td>'+
+          '<td class="ps-r">'+px+'</td>'+
+          '<td class="ps-r">'+_pctv(s.strike)+'</td>'+
+          '<td class="ps-r">'+_pctv(s.ki)+'</td>'+
+          '<td>'+_esc(s.kiType)+'</td>'+
+          '<td class="ps-r">'+_pctv(s.ko)+'</td>'+
+          '<td class="ps-r ps-cpn">'+_pctv(s.coupon)+'</td>'+
+        '</tr>';
+      });
+      html+='</tbody></table>';
+    });
+    html+='</div>';
+  });
+  host.innerHTML=html;
+}
+
+(function(){
+  let _prevDark=false;
+  // 打印前：① 重建分组完整表格 ② 强制浅色（省墨、更清晰，热力图按浅色主题呈现）。打印后还原用户原主题。
+  window.addEventListener('beforeprint',function(){
+    try{ buildPrintSheet(); }catch(e){ console.warn('buildPrintSheet failed:',e); }
+    const root=document.documentElement;
+    _prevDark=root.getAttribute('data-theme')==='dark';
+    if(_prevDark) root.removeAttribute('data-theme');
+  });
+  window.addEventListener('afterprint',function(){
+    if(_prevDark) document.documentElement.setAttribute('data-theme','dark');
+    _prevDark=false;
+  });
+})();
+
 // ═══ Section 折叠 ═══
 // 为每个 .collapsible section 注入可点击的标题栏（标题来自 data-sec），其余内容包进 .sec-content
 function setupSections(){
@@ -2417,6 +2580,289 @@ function renderNavSub(){
   const fri=new Date(mon);fri.setDate(mon.getDate()+4);
   const f=x=>`${x.getFullYear()}/${x.getMonth()+1}/${x.getDate()}`;
   el.textContent=`结构化产品组 ${f(mon)}-${f(fri)}`;
+}
+</script>
+
+<!-- ═══════════════ PDF 导出遮罩（Paged.js 分页预览 + 页码 + 每页风险声明）═══════════════ -->
+<div id="pdf-overlay">
+  <div id="pdf-toolbar">
+    <span id="pdf-status">正在准备…</span>
+    <span class="pdf-grow"></span>
+    <button class="primary" id="pdf-print-btn" onclick="pdfPrint()" disabled>打印 / 另存为 PDF</button>
+    <button onclick="closePdfOverlay()">关闭</button>
+  </div>
+  <div id="pdf-render"></div>
+</div>
+
+<script>
+// ═══════════════ PDF 导出（Paged.js）═══════════════
+// 颜色：正绿负红，按涨跌幅强度调透明度
+function _heatColor(c){ const m=Math.min(Math.abs(c)/6,1); const a=(0.12+m*0.5).toFixed(2);
+  return c>=0?('rgba(34,150,94,'+a+')'):('rgba(200,60,55,'+a+')'); }
+
+// 板块热力图（保留颜色）
+function buildPdfHeatmap(){
+  const sh=(typeof DATA!=='undefined'&&DATA.meta)?DATA.meta.sectorHeatmap:null;
+  if(!sh||(!(sh.us||[]).length&&!(sh.hk||[]).length)) return '';
+  const tile=o=>'<div class="hm-tile" style="background:'+_heatColor(o.change)+'"><div class="hm-n">'+_esc(o.name)+'</div><div class="hm-c">'+(o.change>=0?'+':'')+(+o.change).toFixed(1)+'%</div></div>';
+  const grid=a=>'<div class="hm-grid">'+a.map(tile).join('')+'</div>';
+  let h='<div class="pdf-sec"><h2 class="pdf-h2"><span class="sec-no">02</span> 市场热点图 · 板块周表现</h2>';
+  if(sh.weekRange) h+='<div class="pdf-sub">区间 '+_esc(sh.weekRange)+'（涨跌幅为过去 5 个交易日板块表现）</div>';
+  if((sh.us||[]).length){h+='<div class="pdf-mkt">美股</div>'+grid(sh.us);}
+  if((sh.hk||[]).length){h+='<div class="pdf-mkt">港股</div>'+grid(sh.hk);}
+  return h+'</div>';
+}
+
+// 财经日历
+function _calTable(heads,rows){ if(!rows) return '';
+  return '<table class="pdf-table"><thead><tr>'+heads.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table>'; }
+function buildPdfCalendar(){
+  const cal=(typeof DATA!=='undefined'&&DATA.meta)?DATA.meta.calendar:null; if(!cal) return '';
+  const econ=a=>(a||[]).map(e=>'<tr><td>'+_esc(e.date)+'</td><td>'+_esc(e.country||'')+'</td><td>'+_esc(e.event)+'</td><td>'+_esc(e.actual||e.forecast||'—')+'</td><td>'+_esc(e.note||'')+'</td></tr>').join('');
+  const earn=a=>(a||[]).map(e=>'<tr><td>'+_esc(e.date)+'</td><td>'+_esc(((e.ticker||'')+' '+(e.name||'')).trim())+'</td><td>'+_esc(e.market||'')+'</td><td>'+_esc(e.epsEst||e.epsActual||'—')+'</td><td>'+_esc(e.revEst||e.mktCap||'')+'</td></tr>').join('');
+  const er=cal.econReview||[],ep=cal.econPreview||[],rr=cal.earnReview||[],rp=cal.earnPreview||[];
+  if(!er.length&&!ep.length&&!rr.length&&!rp.length) return '';
+  let h='<div class="pdf-sec"><h2 class="pdf-h2"><span class="sec-no">03</span> 财经日历</h2>';
+  if(er.length) h+='<div class="pdf-mkt">经济数据 · 回顾 '+_esc(cal.reviewRange||'')+'</div>'+_calTable(['日期','地区','事件','结果','说明'],econ(er));
+  if(ep.length) h+='<div class="pdf-mkt">经济数据 · 预告 '+_esc(cal.previewRange||'')+'</div>'+_calTable(['日期','地区','事件','预期','说明'],econ(ep));
+  if(rr.length) h+='<div class="pdf-mkt">财报 · 回顾</div>'+_calTable(['日期','公司','市场','EPS','营收/市值'],earn(rr));
+  if(rp.length) h+='<div class="pdf-mkt">财报 · 预告</div>'+_calTable(['日期','公司','市场','EPS 预期','营收/市值'],earn(rp));
+  return h+'</div>';
+}
+
+// ═══ 单标的：近 6 月走势切片 ═══
+function _pdf6mSlice(ph){
+  if(!ph||!ph.closes||!ph.closes.length) return null;
+  const dates=ph.dates||[], closes=ph.closes;
+  const last=new Date(dates[dates.length-1]||Date.now());
+  const cut=new Date(last); cut.setMonth(cut.getMonth()-6);
+  let i0=0; for(let i=0;i<dates.length;i++){ if(new Date(dates[i])>=cut){ i0=i; break; } }
+  if(i0>closes.length-5) i0=Math.max(0,closes.length-126); // 兜底：至少取约 6 个月交易日
+  return {dates:dates.slice(i0), closes:closes.slice(i0)};
+}
+
+// ═══ 单标的走势图：价格折线 + 敲出/行权/敲入三条价位虚线 ═══
+function pdfStockChartSVG(s){
+  const sl=_pdf6mSlice(s.priceHistory);
+  if(!sl||sl.closes.length<2) return '<div class="pd-nochart">暂无走势数据</div>';
+  const closes=sl.closes;
+  const w=176,h=60,pl=4,pr=42,pt=6,pb=9;
+  const base=s.initialPrice||s.price||closes[closes.length-1];
+  const kiPx=base*(s.ki||0)/100, stPx=base*(s.strike||0)/100, koPx=base*(s.ko||100)/100;
+  const cur=s.currency==='HKD'?'HK$':'$';
+  let lo=Math.min.apply(null,closes.concat([kiPx,stPx,koPx]));
+  let hi=Math.max.apply(null,closes.concat([kiPx,stPx,koPx]));
+  const pad=(hi-lo)*0.07||1; lo-=pad; hi+=pad; const rng=hi-lo||1;
+  const X=i=> pl + i/(closes.length-1)*(w-pl-pr);
+  const Y=v=> pt + (hi-v)/rng*(h-pt-pb);
+  const line=closes.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
+  const lvl=(px,col,lbl)=>{ const y=Y(px); if(y<pt-0.5||y>h-pb+0.5) return '';
+     return '<line x1="'+pl+'" y1="'+y.toFixed(1)+'" x2="'+(w-pr)+'" y2="'+y.toFixed(1)+'" stroke="'+col+'" stroke-width="0.8" stroke-dasharray="2.2,1.6"/>'
+       +'<text x="'+(w-pr+2.5)+'" y="'+(y+2).toFixed(1)+'" fill="'+col+'" font-size="5.6">'+lbl+' '+cur+px.toFixed(2)+'</text>'; };
+  const lastV=closes[closes.length-1];
+  return '<svg viewBox="0 0 '+w+' '+h+'" width="100%" preserveAspectRatio="xMidYMid meet" class="pd-svg">'
+    + lvl(koPx,'#1E8449','敲出')
+    + lvl(stPx,'#B8914A','行权')
+    + lvl(kiPx,'#C0392B','敲入')
+    + '<path d="'+line+'" fill="none" stroke="#2a2a2a" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round"/>'
+    + '<circle cx="'+X(closes.length-1).toFixed(1)+'" cy="'+Y(lastV).toFixed(1)+'" r="1.9" fill="#111"/>'
+    + '</svg>';
+}
+
+// ═══ 美股英文常用名：去掉法人后缀与结尾泛化词 ═══
+function _enName(s){
+  let n=(s.name_en||'').trim();
+  if(!n) return '';
+  const suf=/,?\s+(Incorporated|Inc\.?|Corporation|Corp\.?|Companies|Company|Co\.?|Limited|Ltd\.?|L\.?L\.?C\.?|PLC|plc|N\.?V\.?|S\.?A\.?|S\.?p\.?A\.?|AG|SE|A\/S|Holdings|Holding|Group)\.?$/i;
+  n=n.replace(suf,'').replace(suf,'');              // 两遍：应对双重/残留后缀（如 Corporation Ltd.）
+  n=n.replace(/\s+(and|&)$/i,'');                    // 去结尾残留连接词（Eli Lilly and Company→Eli Lilly）
+  n=n.replace(/\s+(Technologies|Technology)$/i,''); // 去结尾泛化词（Palantir Technologies→Palantir，Spotify Technology→Spotify）
+  return n.replace(/[,\s]+$/,'').trim();
+}
+
+// ═══ 单标的明细卡片 ═══
+function pdfStockCard(s){
+  const cur=s.currency==='HKD'?'HK$':'$';
+  const base=s.initialPrice||s.price||0;
+  const pxOf=v=>cur+(base*(v||0)/100).toFixed(2);
+  const bl=(s.bullets||s.highlights||[]).slice(0,2).map(b=>'<li>'+_esc(b)+'</li>').join('')||'<li class="pd-na">暂无投资要点</li>';
+  const disp=String(s.code).split('.')[0];
+  const hasChg=!(s.priceChange==null||s.priceChange!==s.priceChange);
+  const chg=hasChg?' <span class="'+(s.priceChange>=0?'ps-pos':'ps-neg')+'">'+(s.priceChange>=0?'+':'−')+Math.abs(s.priceChange).toFixed(1)+'%</span>':'';
+  const badges=stockTypes(s).map(t=>TYPES[t]?('<span class="pd-pill" style="background:'+TYPES[t].color+'">'+TYPES[t].panelTitle+'</span>'):'').join('');
+  const tagOk=s.tag&&s.tag!=='稳健'&&s.tag!=='本周精选';  // 不展示“稳健”“本周精选”等倾向性字眼
+  let nameHtml=_esc(s.name);
+  if(s.market==='US'&&/[一-鿿]/.test(s.name)){ const en=_enName(s); if(en&&s.name.indexOf(en)<0) nameHtml+='<span class="pd-en">（'+_esc(en)+'）</span>'; }
+  return '<div class="pd-card">'
+    +'<div class="pd-head">'
+      +'<div class="pd-id"><span class="pd-name">'+nameHtml+'</span><span class="pd-code">'+disp+' · '+mktLabel(s.market)+'</span>'
+        +'<div class="pd-pills">'+badges+(tagOk?'<span class="pd-pill pd-tag">'+_esc(s.tag)+'</span>':'')+'</div>'
+      +'</div>'
+      +'<div class="pd-cpn"><span class="pd-cpn-n">'+(s.coupon)+'<i>%</i></span><span class="pd-cpn-l">年化票息</span></div>'
+    +'</div>'
+    +'<div class="pd-body">'
+      +'<div class="pd-pts"><div class="pd-lab">投资要点</div><ul>'+bl+'</ul>'
+        +'<div class="pd-meta">'+_esc(s.industry||'')+' · '+(s.tenor||'—')+' 个月 · '+_esc(s.kiType||'')+(s.iv30?' · IV '+s.iv30+'%':'')+'</div></div>'
+      +'<div class="pd-chart"><div class="pd-lab">近 6 月走势 · 现价 '+cur+(s.price!=null?s.price:'—')+chg+'</div>'+pdfStockChartSVG(s)+'</div>'
+      +'<div class="pd-terms"><div class="pd-lab">条款价位</div>'
+        +'<table class="pd-ttab"><tbody>'
+          +'<tr><td>行权价</td><td class="ps-r">'+_pctv(s.strike)+'</td><td class="ps-r pd-px">'+pxOf(s.strike)+'</td></tr>'
+          +'<tr><td>敲入价</td><td class="ps-r">'+_pctv(s.ki)+'</td><td class="ps-r pd-px">'+pxOf(s.ki)+'</td></tr>'
+          +'<tr><td>敲出价</td><td class="ps-r">'+_pctv(s.ko)+'</td><td class="ps-r pd-px">'+pxOf(s.ko)+'</td></tr>'
+        +'</tbody></table></div>'
+    +'</div>'
+  +'</div>';
+}
+
+// ═══ 标的明细区（按三大分组、去重，每只一卡）═══
+function buildPdfStockDetails(){
+  if(typeof DATA==='undefined'||!DATA.stocks||!DATA.stocks.length) return '';
+  const meta=DATA.meta||{};
+  const pub=meta.publishDate||'';
+  let nxt='';
+  if(pub){ const d=new Date(pub+'T12:00:00'); if(!isNaN(d)){ d.setDate(d.getDate()+7); nxt=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); } }
+  let h='<div class="pdf-sec pd-wrap"><h2 class="pdf-h2"><span class="sec-no">04</span> FCN 标的每周精选</h2>'
+    +'<div class="pd-intro">基于 10 维度量化评分，从全球 300+ 标的中自动筛选最适合 FCN 结构的底层资产，每周更新。</div>'
+    +'<div class="pd-upd">数据更新 '+pub+(nxt?'　｜　下次更新 '+nxt:'')+'</div>'
+    +'<div class="pd-legend">走势图虚线为本结构价位（按定价日现价换算）：'
+      +'<span class="lg lg-ko">— 敲出</span> <span class="lg lg-st">— 行权</span> <span class="lg lg-ki">— 敲入</span></div>';
+  const seen={};
+  ['稳健','进取','热度'].forEach(function(t){
+    const cfg=TYPES[t]; if(!cfg) return;
+    const pool=DATA.stocks.filter(s=>stockTypes(s).includes(t)&&!seen[s.code]).sort((a,b)=>b.coupon-a.coupon);
+    if(!pool.length) return;
+    h+='<div class="pd-gh"><span class="ps-badge" style="background:'+cfg.color+'">'+(cfg.badge||'')+'</span><h3>'+cfg.panelTitle+'</h3><span class="ps-cnt">'+pool.length+' 只</span></div>';
+    pool.forEach(function(s){ seen[s.code]=1; h+=pdfStockCard(s); });
+  });
+  return h+'</div>';
+}
+
+// 组装 PDF 正文（复用 buildPrintSheet 的页眉+三大分组表格，再加热力图、日历、标的明细；首个为每页运行页脚源）
+function buildPdfContent(){
+  buildPrintSheet();  // 填充 #print-sheet：品牌页眉 + 三大分组完整表格
+  const core=document.getElementById('print-sheet').innerHTML;
+  const runfoot='<div class="runfoot"><span class="rf-text"><strong>重要风险披露 ·</strong> 固定票息票据（FCN）属结构化衍生产品，含股票挂钩风险，投资者可能损失全部本金；本内容仅供合资格投资者参考，不构成投资建议或要约，历史数据不代表未来表现。</span><span class="rf-page"></span></div>';
+  return '<div class="pdfdoc">'+runfoot+core+buildPdfHeatmap()+buildPdfCalendar()+buildPdfStockDetails()+'</div>';
+}
+
+// Paged.js 分页用样式（独立于站点样式，避免互相干扰；含 @page 页码与运行页脚）
+const PDF_CSS=`
+@page{ size:A4 portrait; margin:13mm 11mm 16mm;
+  @bottom-left{ content: element(runfoot); width:100%; }
+}
+.runfoot{ position:running(runfoot); display:flex; justify-content:space-between; align-items:flex-end; gap:8mm; width:188mm; font-size:7.3pt; line-height:1.4; color:#555; }
+.runfoot .rf-text{ flex:1; }
+.runfoot .rf-page{ white-space:nowrap; font-size:8pt; color:#555; }
+.runfoot strong{ color:#333; }
+.pdfdoc{ font-family:"Microsoft YaHei","PingFang SC","Heiti SC",sans-serif; color:#1a1a1a; }
+.ps-header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #1a1a1a;padding-bottom:7px;margin-bottom:5px;}
+.ps-brand{font-size:18px;font-weight:700;color:#111;}
+.ps-brand small{display:block;font-size:9.5px;font-weight:500;color:#666;letter-spacing:.08em;margin-top:3px;}
+.ps-meta{font-size:10.5px;color:#444;text-align:right;line-height:1.5;}.ps-meta b{font-size:12.5px;color:#111;}
+.ps-toc{font-size:10px;color:#555;margin:0 0 14px;}.ps-toc span{margin:0 9px 0 0;}
+.ps-group{margin-bottom:16px;}
+.ps-gh{display:flex;align-items:center;gap:8px;margin:12px 0 3px;break-after:avoid;}
+.ps-badge{font-size:8.5px;font-weight:700;letter-spacing:.09em;color:#fff;padding:2px 6px;border-radius:3px;}
+.ps-gh h3{font-size:14px;font-weight:700;color:#111;margin:0;}
+.ps-gh .ps-cnt{font-size:10.5px;color:#777;font-weight:500;}
+.ps-crit{font-size:9px;color:#666;line-height:1.5;margin:0 0 7px;}
+.ps-mkt{font-size:11px;font-weight:700;color:#333;margin:9px 0 4px;break-after:avoid;}
+.ps-table{width:100%;border-collapse:collapse;font-size:9px;margin-bottom:4px;}
+.ps-table thead{display:table-header-group;}
+.ps-table th{background:#f1efe9;color:#333;font-weight:700;text-align:left;padding:4px 6px;border:1px solid #d8d3c7;white-space:nowrap;}
+.ps-table td{padding:3px 6px;border:1px solid #e4e0d6;color:#222;}
+.ps-table th.ps-r,.ps-table td.ps-r{text-align:right;}
+.ps-table tbody tr{break-inside:avoid;}
+.ps-table tbody tr:nth-child(even){background:#faf9f6;}
+.ps-code{font-weight:700;}.ps-cpn{font-weight:700;}.ps-neg{color:#c0392b;}.ps-pos{color:#1e8449;}
+.pdf-sec{margin-top:14px;}
+.pdf-h2{font-size:13px;font-weight:700;color:#111;border-bottom:1.3px solid #ccc;padding-bottom:4px;margin:16px 0 7px;break-after:avoid;}
+.pdf-h2 .sec-no{display:inline-block;background:#1a1a1a;color:#fff;font-size:10px;font-weight:700;letter-spacing:.04em;padding:1px 6px;border-radius:3px;margin-right:7px;vertical-align:1px;}
+.pdf-h2-first{margin-top:12px;}
+.pdf-sub{font-size:9px;color:#666;margin:0 0 7px;}
+.pdf-mkt{font-size:10.5px;font-weight:700;color:#333;margin:8px 0 4px;break-after:avoid;}
+.hm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:7px;}
+.hm-tile{border:1px solid rgba(0,0,0,.08);border-radius:4px;padding:6px 8px;break-inside:avoid;}
+.hm-n{font-size:9.5px;font-weight:600;color:#222;line-height:1.2;}
+.hm-c{font-size:12px;font-weight:700;color:#111;margin-top:2px;}
+.pdf-table{width:100%;border-collapse:collapse;font-size:8.6px;margin-bottom:6px;}
+.pdf-table thead{display:table-header-group;}
+.pdf-table th{background:#f1efe9;border:1px solid #d8d3c7;padding:3px 6px;text-align:left;font-weight:700;color:#333;}
+.pdf-table td{border:1px solid #e4e0d6;padding:3px 6px;color:#222;vertical-align:top;}
+/* ── 标的明细卡片 ── */
+.pd-wrap{margin-top:16px;}
+.pd-intro{font-size:9.5px;color:#444;line-height:1.5;margin:2px 0 4px;max-width:150mm;}
+.pd-upd{font-size:9px;color:#8C7235;font-weight:600;margin:0 0 8px;}
+.pd-legend{font-size:8px;color:#666;margin:1px 0 9px;}
+.pd-legend .lg{font-weight:700;margin-right:7px;}
+.pd-legend .lg-ko{color:#1E8449;} .pd-legend .lg-st{color:#B8914A;} .pd-legend .lg-ki{color:#C0392B;}
+.pd-gh{display:flex;align-items:center;gap:8px;margin:13px 0 6px;break-after:avoid;}
+.pd-gh h3{font-size:13px;font-weight:700;color:#111;margin:0;}
+.pd-gh .ps-cnt{font-size:10px;color:#888;font-weight:500;}
+.pd-card{border:1px solid #e2ddd1;border-radius:5px;padding:7px 9px;margin-bottom:7px;break-inside:avoid;background:#fff;}
+.pd-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #eee;padding-bottom:4px;margin-bottom:5px;}
+.pd-id{min-width:0;}
+.pd-name{font-size:13px;font-weight:700;color:#111;margin-right:6px;}
+.pd-name .pd-en{font-size:10px;font-weight:600;color:#667;margin-left:1px;}
+.pd-code{font-size:9px;color:#888;font-family:'Roboto Mono',monospace;}
+.pd-pills{margin-top:3px;}
+.pd-pill{display:inline-block;font-size:7.5px;font-weight:600;color:#fff;padding:1px 5px;border-radius:3px;margin:0 3px 2px 0;}
+.pd-tag{background:#8C7235;}
+.pd-cpn{text-align:right;flex-shrink:0;padding-left:8px;}
+.pd-cpn-n{font-size:20px;font-weight:800;color:#8C7235;line-height:1;font-family:'Roboto','Inter',sans-serif;}
+.pd-cpn-n i{font-size:11px;font-style:normal;margin-left:1px;}
+.pd-cpn-l{display:block;font-size:7.5px;color:#999;margin-top:1px;}
+.pd-body{display:grid;grid-template-columns:1.35fr 1.18fr 0.92fr;gap:10px;align-items:start;}
+.pd-lab{font-size:8px;font-weight:700;color:#999;letter-spacing:.05em;margin-bottom:3px;}
+.pd-pts ul{margin:0;padding-left:12px;}
+.pd-pts li{font-size:9px;color:#333;line-height:1.45;margin-bottom:2px;}
+.pd-pts .pd-na{list-style:none;margin-left:-12px;color:#aaa;}
+.pd-meta{font-size:8px;color:#999;margin-top:5px;line-height:1.4;}
+.pd-chart .pd-svg{display:block;border:1px solid #f0ede5;border-radius:3px;}
+.pd-nochart{font-size:8.5px;color:#aaa;border:1px dashed #ddd;border-radius:3px;padding:12px 6px;text-align:center;}
+.pd-terms .pd-ttab{width:100%;border-collapse:collapse;font-size:9px;}
+.pd-terms td{padding:2.5px 4px;border-bottom:1px solid #f0ede5;color:#333;}
+.pd-terms td:first-child{color:#777;}
+.pd-terms .pd-px{font-weight:700;color:#111;}
+`;
+
+let _pagedLoading=null;
+function ensurePagedjs(){
+  if(window.Paged&&window.Paged.Previewer) return Promise.resolve();
+  if(_pagedLoading) return _pagedLoading;
+  window.PagedConfig={auto:false};  // 关键：禁止自动分页整个页面
+  _pagedLoading=new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js';
+    s.onload=()=>res(); s.onerror=()=>rej(new Error('排版引擎 Paged.js 加载失败（需联网）'));
+    document.head.appendChild(s);
+  });
+  return _pagedLoading;
+}
+function setPdfStatus(t){ const e=document.getElementById('pdf-status'); if(e)e.textContent=t; }
+const _FALLBACK_PAGE_CSS='@media print{ @page{ margin:10mm 10mm 16mm 10mm; } }';
+function openPdfOverlay(){ document.getElementById('pdf-overlay').classList.add('on'); document.body.classList.add('pdf-open'); const fp=document.getElementById('fallback-page-css'); if(fp)fp.textContent=''; /* 清空自有页边距，交给 Paged.js，避免空白页 */ }
+function closePdfOverlay(){ document.getElementById('pdf-overlay').classList.remove('on'); document.body.classList.remove('pdf-open'); document.getElementById('pdf-render').innerHTML=''; const b=document.getElementById('pdf-print-btn'); if(b)b.disabled=true; const fp=document.getElementById('fallback-page-css'); if(fp)fp.textContent=_FALLBACK_PAGE_CSS; }
+function pdfPrint(){ window.print(); }
+
+async function exportPDF(){
+  try{
+    if(typeof DATA==='undefined'||!DATA.stocks||!DATA.stocks.length){ Toast&&Toast.show&&Toast.show('数据尚未加载完成，请稍候重试','error',4000); return; }
+    openPdfOverlay();
+    setPdfStatus('正在加载排版引擎…');
+    await ensurePagedjs();
+    setPdfStatus('正在分页排版…');
+    const content=buildPdfContent();
+    const target=document.getElementById('pdf-render'); target.innerHTML='';
+    const cssUrl='data:text/css;charset=utf-8;base64,'+btoa(unescape(encodeURIComponent(PDF_CSS)));
+    const paged=new Paged.Previewer();
+    await paged.preview(content,[cssUrl],target);
+    // 逐页写入页码(Paged 把运行页脚复制到每页，这里给每页那份填上「第 i / n 页」)
+    const pages=target.querySelectorAll('.pagedjs_page'); const n=pages.length;
+    pages.forEach((pg,i)=>{ const rp=pg.querySelector('.pagedjs_margin-bottom-left .rf-page'); if(rp) rp.textContent='第 '+(i+1)+' / '+n+' 页'; });
+    setPdfStatus('排版完成 · 共 '+n+' 页。点右侧「打印 / 另存为 PDF」，目标选「另存为 PDF」即可。');
+    const b=document.getElementById('pdf-print-btn'); if(b)b.disabled=false;
+  }catch(e){ console.error(e); setPdfStatus('出错：'+(e&&e.message||e)); }
 }
 </script>
 </body>
